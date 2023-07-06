@@ -1,11 +1,12 @@
 import pyodbc
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import datetime
 
 server = 'sayyesbuffalo1.database.windows.net'
 database = 'sayyesbuffalo1'
 username = 'echou1'
-password = 'toqwyD-modpak-pigte4'   
+password = 'Bonkers123'   
 driver= '{ODBC Driver 17 for SQL Server}'
 
 connection = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
@@ -13,7 +14,13 @@ conn = pyodbc.connect(connection)
 cur = conn.cursor()
 
 app = Flask(__name__)
-app.debug = True
+app.config["DEBUG"] = True
+
+CORS(app)
+
+@app.route('/')
+def test():
+    return "hello"
 
 @app.route('/insert_user', methods=['POST'])
 def insert_user():
@@ -45,7 +52,5 @@ def get_companies():
                     'Title':company.Title, 
                     'ID':company.ID} for company in data])
 
-
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=3001)
