@@ -10,17 +10,15 @@ app = Flask(__name__)
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
-    # from json: email, company
-    data = request.get_json()  
+    msg = MIMEText("Please update us about your application to " + request.args.get("company") + "!")
     
-    msg = MIMEText("Please update us about your application to " + data["company"] + "!")
     msg['Subject'] = subject
     msg['From'] = sender
-    msg['To'] = [data["email"]]
+    msg['To'] = request.args.get("email")
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
        smtp_server.login(sender, password)
-       smtp_server.sendmail(sender, recipients, msg.as_string())
-    print("Message sent!")
+       smtp_server.sendmail(sender, request.args.get("email"), msg.as_string())
+    return jsonify({'msg':'email sent'})
 
 
 if __name__ == '__main__':
