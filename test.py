@@ -52,5 +52,17 @@ def get_companies():
                     'Title':company.Title, 
                     'ID':company.ID} for company in data])
 
+@app.route('/login', methods=['GET'])
+def exists_email():
+    email = request.args["email"]
+    cur.execute(f"SELECT * FROM Users WHERE Email = \'{email}\'")
+    data = cur.fetchall()
+    print(data)
+    print(len(data))
+    if len(data):
+        return "Success", 200
+    else:
+        return "Failure", 400
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=3001)
