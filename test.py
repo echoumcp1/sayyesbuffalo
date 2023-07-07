@@ -8,12 +8,12 @@ from email.mime.text import MIMEText
 server = 'sayyesbuffalo1.database.windows.net'
 database = 'sayyesbuffalo1'
 username = 'echou1'
-password = 'xacPix-cafsoz-0vyhby'   
+password = ""
 driver= '{ODBC Driver 17 for SQL Server}'
 
 subject = "Application Follow-up"
 sender = "SayYesTeam2@gmail.com"
-passwd = "wxvajsarlasdavql"
+passwd = ""
 
 connection = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
 conn = pyodbc.connect(connection)
@@ -53,7 +53,7 @@ def insert_app():
     return jsonify({'msg': 'application insertion success'})
 
 def send_email(receiver, company, job_id):
-    msg = MIMEText(f"""Please update us about your application to {company}!\nhttp://localhost:3000/survey?email={receiver}?company={company}?id={job_id}""")
+    msg = MIMEText(f"""Please update us about your application to {company}!\nhttp://localhost:3000/survey?email={receiver}&company={company}&id={job_id}""")
     
     msg['Subject'] = subject
     msg['From'] = sender
