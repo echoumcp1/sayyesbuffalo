@@ -37,20 +37,25 @@ def insert_app():
     data = request.get_json()
     email, company_id = data['Email'], data['ID']
 
-    cur.execute("INSERT INTO Application VALUES (?, ?, ?);", (email, company_id, datetime.datetime.now()))
+    cur.execute("INSERT INTO Application VALUES (?, ?, ?, ?);", (email, company_id, datetime.datetime.now(), 0))
     conn.commit()
 
     return jsonify({'msg': 'application insertion success'})
+
+def change_status():
+    pass
 
 @app.route('/get_companies', methods=['GET'])
 def get_companies():
     cur.execute("SELECT * FROM Companies")
     data = cur.fetchall()
 
-    return jsonify([{'Name':company.Name, 
-                    'URL':company.URL, 
-                    'Title':company.Title, 
-                    'ID':company.ID} for company in data])
+    return jsonify([{'company':company.Name, 
+                    'link':company.URL, 
+                    'title':company.Title, 
+                    'job_id':company.ID,
+                    'location':company.Location,
+                    'tools':company.Tools} for company in data])
 
 @app.route('/login', methods=['GET'])
 def exists_email():
@@ -66,3 +71,5 @@ def exists_email():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=3001)
+
+    
