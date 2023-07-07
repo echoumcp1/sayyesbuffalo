@@ -8,12 +8,12 @@ from email.mime.text import MIMEText
 server = 'sayyesbuffalo1.database.windows.net'
 database = 'sayyesbuffalo1'
 username = 'echou1'
-password = ""
+password = 'xacPix-cafsoz-0vyhby'   
 driver= '{ODBC Driver 17 for SQL Server}'
 
 subject = "Application Follow-up"
 sender = "SayYesTeam2@gmail.com"
-passwd = ""
+passwd = "wxvajsarlasdavql"
 
 connection = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
 conn = pyodbc.connect(connection)
@@ -48,12 +48,12 @@ def insert_app():
 
     cur.execute(f"SELECT Name FROM Companies WHERE ID = {company_id}")
     company_name = cur.fetchone()[0]
-    send_email(email, company_name)
+    send_email(email, company_name, company_id)
 
     return jsonify({'msg': 'application insertion success'})
 
-def send_email(receiver, company):
-    msg = MIMEText("Please update us about your application to " + company + "!")
+def send_email(receiver, company, job_id):
+    msg = MIMEText(f"""Please update us about your application to {company}!\nhttp://localhost:3000/survey?email={receiver}?company={company}?id={job_id}""")
     
     msg['Subject'] = subject
     msg['From'] = sender
@@ -66,8 +66,8 @@ def send_email(receiver, company):
 @app.route('/submit', methods=['POST'])
 def change_status():
     data = request.get_json()
-    email, company_id, status = data['Email'], data['ID'], data['Status']
-    cur.execute(f"UPDATE Applications SET Status={status} WHERE Email = \'{email}\' AND ID = {company_id}")
+    email, job_id, status = data['Email'], data['ID'], data['Status']
+    cur.execute(f"UPDATE Application SET Status={status} WHERE Email = \'{email}\' AND Company_ID = {job_id}")
     conn.commit()
 
     return "Update success"
