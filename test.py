@@ -8,12 +8,12 @@ from email.mime.text import MIMEText
 server = 'sayyesbuffalo1.database.windows.net'
 database = 'sayyesbuffalo1'
 username = 'echou1'
-password = ""
+password = '' 
 driver= '{ODBC Driver 17 for SQL Server}'
 
 subject = "Application Follow-up"
 sender = "SayYesTeam2@gmail.com"
-passwd = ""
+passwd = ''
 
 connection = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
 conn = pyodbc.connect(connection)
