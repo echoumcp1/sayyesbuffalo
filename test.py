@@ -8,12 +8,12 @@ from email.mime.text import MIMEText
 server = 'sayyesbuffalo1.database.windows.net'
 database = 'sayyesbuffalo1'
 username = 'echou1'
-password = '' 
+password = ""
 driver= '{ODBC Driver 17 for SQL Server}'
 
 subject = "Application Follow-up"
 sender = "SayYesTeam2@gmail.com"
-passwd = ''
+passwd = ""
 
 connection = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
 conn = pyodbc.connect(connection)
@@ -42,15 +42,17 @@ def insert_user():
 def insert_app():
     data = request.get_json()
     email, company_id = data['Email'], data['Job']
+    try:
+        cur.execute("INSERT INTO Application VALUES (?, ?, ?, ?);", (email, company_id, datetime.datetime.now(), 0))
+        conn.commit()
 
-    cur.execute("INSERT INTO Application VALUES (?, ?, ?, ?);", (email, company_id, datetime.datetime.now(), 0))
-    conn.commit()
+        cur.execute(f"SELECT Name FROM Companies WHERE ID = {company_id}")
+        company_name = cur.fetchone()[0]
+        send_email(email, company_name, company_id)
 
-    cur.execute(f"SELECT Name FROM Companies WHERE ID = {company_id}")
-    company_name = cur.fetchone()[0]
-    send_email(email, company_name, company_id)
-
-    return jsonify({'msg': 'application insertion success'})
+        return jsonify({'msg': 'application insertion success'})
+    except:
+        return jsonify({'msg': 'already applied'}), 400
 
 def send_email(receiver, company, job_id):
     msg = MIMEText(f"""Please update us about your application to {company}!\nhttp://localhost:3000/survey?email={receiver}&company={company}&id={job_id}""")
